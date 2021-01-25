@@ -252,6 +252,8 @@ typedef struct flags
 } Flags;
 ```
 
+</details>
+
 ---
 
 **PacketInfo**
@@ -292,8 +294,6 @@ typedef struct packetInfo
 ```
 
 </details>
-
----
 
 ### Public Member Functions
 
