@@ -52,6 +52,9 @@ Various modes can be set via M0 and M1 pins.
 
 **DataRate**
 
+Values to be passed to [setDataRate()](#setdatarate) to control the on-air data rate.
+This is NOT to be used to control the baud rate of the serial connection to the radio
+
 <details>
 
 ```cpp
@@ -74,15 +77,17 @@ enum DataRate
 
 **PowerLevel**
 
+Values to be passed to [setPower()](#setpower) to control the transmitter power.
+
 <details>
 
 ```cpp
 enum PowerLevel
 {
-    <b>Power30dBm</b> = RH_E32_PARAM_OPTION_POWER_30DBM,
-    <b>Power27dBm</b> = RH_E32_PARAM_OPTION_POWER_27DBM,
-    <b>Power24dBm</b> = RH_E32_PARAM_OPTION_POWER_24DBM,
-    <b>Power21dBm</b> = RH_E32_PARAM_OPTION_POWER_21DBM
+    Power30dBm = RH_E32_PARAM_OPTION_POWER_30DBM,
+    Power27dBm = RH_E32_PARAM_OPTION_POWER_27DBM,
+    Power24dBm = RH_E32_PARAM_OPTION_POWER_24DBM,
+    Power21dBm = RH_E32_PARAM_OPTION_POWER_21DBM
 }
 ```
 
@@ -91,6 +96,9 @@ enum PowerLevel
 ---
 
 **BaudRate**
+
+Values to be passed to [setBaudRate()](#setbaudrate) to control the radio serial connection baud rate.
+This is NOT to be used to control the on-air data rate the radio transmits and receives at
 
 <details>
 
@@ -113,6 +121,11 @@ enum BaudRate
 ---
 
 **ResponseStatus**
+
+Value which provide information about transmision succes.
+Thanks to the value the user can check exactly what went wrong during the transmission.
+Very useful during debugging.
+returned by [sendString()](#sendstring), [sendStruct()](#sendstruct) and indirectly by [receiveMessage()](#receivemessage).
 
 <details>
 
@@ -144,6 +157,11 @@ typedef enum RESPONSE_STATUS
 
 **FlightState**
 
+Value used to convey information about the current status of the mission.
+Used as one of transmission flag.
+
+`NOTE: useful in Rockets projects`
+
 <details>
 
 ```cpp
@@ -165,6 +183,12 @@ typedef enum flightState
 ---
 
 **LoRaSinglePacket**
+
+This is struct used for wraping message into packet.
+Library automatically wrap user message in [sendString()](#sendstring) and [sendStruct()](#sendstruct).
+Each field contains information about the packet.
+
+`NOTE: ID_RX must be 0xff, its broadcast value.`
 
 <details>
 
@@ -203,16 +227,81 @@ typedef struct LoRaSinglePacket
 
 </details>
 
+---
+
+**Flags**
+
+Data container for user flags.
+These flags can be used by the user in any way, depend of user needs.
+used as one field in message packet.
+
+<details>
+
+```cpp
+typedef struct flags
+{
+    /*
+    7 bits for flags
+    */
+    bool FLAG1 = 0;
+    bool FLAG2 = 0;
+    bool FLAG3 = 0;
+    bool FLAG4 = 0;
+    FlightState MISSION_STATE = LAUNCHPAD; // 3 bit flag.
+
+} Flags;
+```
+
+## </details>
+
+---
+
+**PacketInfo**
+
+Result of [receiveMessage()](#receivemessage).
+This container contain transmission metadata.
+
+<details>
+
+```cpp
+typedef struct packetInfo
+{
+    /*
+    Status of transmition
+    */
+    Status status;
+    /*
+    Header of packet:
+    8bits - message len
+    */
+    byte MSG_LEN = 0;
+    /*
+    1-8bits - message transmiter ID
+    */
+    byte ID_TX = 0;
+    /*
+    1bit    - Serial or struct message (1 or 0)
+    2-8bits - For user flags
+    */
+    Flags FLAGS;
+    /*
+    1bit    - string or struct message (0 or 1)
+    2-8bits - For user flags
+    */
+    bool MSG_TYPE = 0;
+
+} PacketInfo;
+```
+
+## </details>
+
+---
+
 ### Public Member Functions
 
 ### Protected Member Functions
 
 ### Private Member Functions
-
-<H3 id="DataRate">DataRate</H3>
-<H3 id="PowerLevel">PowerLevel</H3>
-<H3 id="BaudRate">BaudRate</H3>
-<H3 id="RESPONSE_STATUS">RESPONSE_STATUS</H3>
 
 ### Constructor
 
