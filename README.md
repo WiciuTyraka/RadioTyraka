@@ -252,8 +252,6 @@ typedef struct flags
 } Flags;
 ```
 
-## </details>
-
 ---
 
 **PacketInfo**
@@ -293,7 +291,7 @@ typedef struct packetInfo
 } PacketInfo;
 ```
 
-## </details>
+</details>
 
 ---
 
@@ -301,7 +299,7 @@ typedef struct packetInfo
 
 ---
 
-**Constructor**
+### Constructor
 
 User can have multiple instances of Contructor, but each instance must have its own serial connection, M0 M1 and AUX connections. Initialises the mode of the referenced pins Does NOT set the baud rate of the serial connection to the radio.
 
@@ -350,35 +348,25 @@ inherited from RadioHead.
 
 </details>
 
-### Protected Member Functions
+### waitPacketSent
 
-### Private Member Functions
-
-### Init
+Waits for any currently transmitting packet to be completely sent
 
 <details>
 
-Itialise the device transport hardware and software. Make sure the RadioTyraka is properly, including setting the serial port baud rate and parity to that configured in the radio (typically 9600 baud, 8N1) before calling init(). Sets the module to default transmition values (these setting can be changed after initialisation with the various set\* functions):
-
-- transmition frequency - `443MHz`,
-- transmision power - `21dBm`,
-- data rate - `5kpbs`.
-
-This function may not return if the AUX pin is not connected. Initialisation failure can be caused by: Electrical connections to the radio, incorrect or incomplete Radio configured to use a different baud rate to the one configured to the microcontoler serial port, incorrect radio module connected to the serial port. Other serial communicaitons problems between the microcontroler and the radio device.
+```cpp
+bool 	waitPacketSent ()
+```
 
 **Returns**
 
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; true if initialisation succeeded.
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;true if successful
 
 &nbsp;
 
 inherited from RadioHead.
 
 </details>
-
----
-
-bool waitPacketSent ()
 
 ---
 
@@ -463,3 +451,7 @@ bool 	setFrequency (uint16_t frequency)
 inherited from RadioHead.
 
 </details>
+
+### Protected Member Functions
+
+### Private Member Functions
