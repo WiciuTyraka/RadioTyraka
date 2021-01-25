@@ -348,6 +348,8 @@ inherited from RadioHead.
 
 </details>
 
+---
+
 ### waitPacketSent
 
 Waits for any currently transmitting packet to be completely sent
