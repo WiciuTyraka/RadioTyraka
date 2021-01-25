@@ -299,21 +299,22 @@ typedef struct packetInfo
 
 ### Public Member Functions
 
-### Protected Member Functions
+---
 
-### Private Member Functions
+**Constructor**
 
-### Constructor
+User can have multiple instances of Contructor, but each instance must have its own serial connection, M0 M1 and AUX connections. Initialises the mode of the referenced pins Does NOT set the baud rate of the serial connection to the radio.
 
 <details>
- You can have multiple instances of Contructor, but each instance must have its own serial connection, M0 M1 and AUX connections. Initialises the mode of the referenced pins Does NOT set the baud rate of the serial connection to the radio.
 
-    RadioTyraka( Stream *s = &Serial,
-                 uint8_t m0_pin = 4,
-                 uint8_t m1_pin = 5,
-                 uint8_t aux_pin = 8,
-                 uint8_t ID = 0
-                 );
+```cpp
+RadioTyraka( Stream *s = &Serial,
+             uint8_t m0_pin = 4,
+             uint8_t m1_pin = 5,
+             uint8_t aux_pin = 8,
+             uint8_t ID = 0
+             );
+```
 
 **Parameters**
 
@@ -323,6 +324,35 @@ typedef struct packetInfo
 - `ID` - a unique identifier in the range 1-255. enables identification of the transmitting device. It is not needed for correct operation, the default value is 0.
 
 </details>
+
+---
+
+### Init
+
+Method used for LoRa device initialization.
+
+<details>
+Initialize the device transport hardware and software. Make sure the RadioTyraka is properly, including setting the serial port baud rate and parity to that configured in the radio (typically 9600 baud, 8N1) before calling init(). Sets the module to default transmition values (these setting can be changed after initialisation with the various set\* functions):
+
+- transmition frequency - `443MHz`,
+- transmision power - `21dBm`,
+- data rate - `5kpbs`.
+
+This function may not return if the AUX pin is not connected. Initialisation failure can be caused by: Electrical connections to the radio, incorrect or incomplete Radio configured to use a different baud rate to the one configured to the microcontoler serial port, incorrect radio module connected to the serial port. Other serial communicaitons problems between the microcontroler and the radio device.
+
+**Returns**
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; true if initialisation succeeded.
+
+&nbsp;
+
+inherited from RadioHead.
+
+</details>
+
+### Protected Member Functions
+
+### Private Member Functions
 
 ### Init
 
@@ -339,6 +369,94 @@ This function may not return if the AUX pin is not connected. Initialisation fai
 **Returns**
 
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; true if initialisation succeeded.
+
+&nbsp;
+
+inherited from RadioHead.
+
+</details>
+
+---
+
+bool waitPacketSent ()
+
+---
+
+### setPower
+
+Sets the transmitter power output
+
+<details>
+
+```cpp
+bool  setPower (PowerLevel level)
+```
+
+**Parameters**
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;level of valid power setting from the Power enum
+
+&nbsp;
+
+**Returns**
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;true if successful
+
+&nbsp;
+
+inherited from RadioHead.
+
+</details>
+
+---
+
+### setDataRate
+
+Sets the on-air data rate to be used by the transmitter and receiver.
+
+<details>
+
+```cpp
+bool 	setDataRate (DataRate rate)
+```
+
+**Parameters**
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;level of valid data rate from the DataRate enum
+
+&nbsp;
+
+**Returns**
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;true if successful
+
+&nbsp;
+
+inherited from RadioHead.
+
+</details>
+
+---
+
+### setFrequency
+
+Sets the tarnsmitter and receiver frequency.
+
+<details>
+
+```cpp
+bool 	setFrequency (uint16_t frequency)
+```
+
+**Parameters**
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;level of valid frequency in range from 410 to 441 MHz.
+
+&nbsp;
+
+**Returns**
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;true if successful
 
 &nbsp;
 
