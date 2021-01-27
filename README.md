@@ -7,11 +7,11 @@
   - [LoRa Library](#lora-library)
     - [Detailed Description](#detailed-description)
     - [Types](#types)
+  - [Library Member Documentation](#library-member-documentation)
     - [Public Member Functions](#public-member-function)
     - [Protected Member Function](#protected-member-function)
     - [Private Member Functions](#private-member-function)
     - [Additional Inherited Members](#additional-inherited-members)
-    - [Library Member Documentation](#library-member-documentation)
 
 # LoRa Library
 
@@ -44,7 +44,7 @@ Various modes can be set via M0 and M1 pins.
 
 </details>
 
-# Library Member Documentation
+# Library Members Documentation
 
 ## Types
 
@@ -124,7 +124,7 @@ enum BaudRate
 
 Defines values to be passed to [setOperatinMode](#setoperationmode).
 
-For internal driver user only
+For internal driver user only.
 
 <details>
 
@@ -146,7 +146,7 @@ For internal driver user only
 
 Structure for reading and writing radio control parameters.
 
-For internal driver user only
+For internal driver user only.
 
 <details>
 
@@ -342,9 +342,9 @@ typedef struct packetInfo
 
 </details>
 
-## Public Member Functions
-
 ---
+
+## Public Member Functions
 
 ### Constructor
 
@@ -431,7 +431,7 @@ bool  setPower (PowerLevel level)
 
 **Parameters**
 
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;level of valid power setting from the Power enum
+- `level` - level of valid power setting from the Power enum
 
 &nbsp;
 
@@ -459,7 +459,7 @@ bool 	setDataRate (DataRate rate)
 
 **Parameters**
 
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;level of valid data rate from the DataRate enum
+- `rate` - level of valid data rate from the DataRate enum
 
 &nbsp;
 
@@ -487,7 +487,7 @@ bool 	setFrequency (uint16_t frequency)
 
 **Parameters**
 
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;level of valid frequency in range from 410 to 441 MHz.
+- `frequency` - level of valid frequency in range from 410 to 441 MHz.
 
 &nbsp;
 
@@ -501,9 +501,131 @@ inherited from RadioHead.
 
 </details>
 
-## Protected Member Functions
+---
+
+### sendString
+
+Send string message and wrap message into packet.
+
+<details>
+
+```cpp
+Status sendString(const uint8_t *message, const uint8_t size, const Flags *flags = NULL);
+```
+
+**Parameters**
+
+- `message` - pointer to the memory area where the message is stored,
+- `size` - number of bytes of data to send,
+- `flags` - pointer to Flags struct which stored all flags. This parameter is optional, the message can be sent without flags.
+
+&nbsp;
+
+**Returns**
+
+- `Status` - status stored information about transmission success.
+
+</details>
 
 ---
+
+### sendStruct
+
+Send data from struct and wrap message into packet.
+
+<details>
+
+```cpp
+Status sendStruct(const void *message, const uint8_t size, const Flags *flags = NULL);
+```
+
+**Parameters**
+
+- `message` - pointer to the memory area where the message is stored,
+- `size` - number of bytes of data to send,
+- `flags` - pointer to Flags struct which stored all flags. This parameter is optional, the message can be sent without flags.
+
+&nbsp;
+
+**Returns**
+
+- `Status` - status stored information about transmission success.
+
+</details>
+
+---
+
+### receiveMessage
+
+Method used to receive message, can be used for both, struct and string messages.
+Message type can be distinguished by type field in Packet Info struct.
+
+<details>
+
+```cpp
+PacketInfo receiveMessage(void *packet, uint8_t *size_);
+```
+
+**Parameters**
+
+- `packet` - pointer to the memory area where the message will be stored.
+- `size` - pointer to variable which stored number of bytes of recived data.
+
+&nbsp;
+
+**Returns**
+
+- `PacketInfo` - struct which stored metadeta of transmission.
+
+| PacketInfo fileds | bit no. |                                 Description |
+| ----------------- | ------: | ------------------------------------------: |
+| status            |       8 |                       Status of transmition |
+| MSG_LEN           |       8 |                   length of recived message |
+| ID_TX             |       8 |                       message transmiter ID |
+| FLAGS             |       7 |                                  user flags |
+| MSG_TYPE          |       1 | type of message - string or struct (0 or 1) |
+
+</details>
+
+---
+
+### getDeviceID
+
+get the transmiter device ID which was set by [constructor](#constructor) or [setDeviceId](#setdeviceid).
+
+<details>
+
+```cpp
+uint8_t getDeviceID();
+```
+
+**Returns**
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Device ID.
+
+</details>
+
+---
+
+### setDeviceID
+
+Set new ID of the device.
+
+<details>
+
+```cpp
+void setDeviceID(uint8_t ID);
+```
+
+**Parameters**
+
+- `ID` - new unique identificator number.
+
+</details>
+
+---
+
+## Protected Member Functions
 
 ### setOperatingMode
 
@@ -517,7 +639,7 @@ void 	setOperatingMode (OperatingMode mode)
 
 **Parameters**
 
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;value of valid mode from the OperatingMode enum
+- `mode` - value of valid mode from the OperatingMode enum
 
 &nbsp;
 inherited from RadioHead.
