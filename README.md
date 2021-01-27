@@ -17,6 +17,12 @@
 
 ## Detailed Description
 
+This library provides basic functions for sending and receiving unaddressed, unreliable datagrams of arbitrary length to 53 octets per packet. Manager classes may use this class to implement reliable, addressed datagrams and streams, mesh routers, repeaters, translators etc.
+Naturally, for any 2 radios to communicate that must be configured to use the same frequency and modulation scheme.
+
+This library provides an object-oriented interface for sending and receiving data messages with EBYTE RFM95/96/97/98(W), Semtech SX1276/77/78/7E32-TTL-1W9 and compatible radio modules. These modules implement long range LORA transcivers with a transparent serial interface.
+This driver provides methods for sending and receiving messages of up to 53 octets on any frequency supported by the radio, in a range of data rates and power outputs. Frequency can be set with 1MHz precision to any frequency from 410 to 441MHz.
+
 ### Pinout
 
 <details>
@@ -43,6 +49,30 @@ Various modes can be set via M0 and M1 pins.
 | Sleep        |   0 |   1 | Used in setting parameters. Transmitting and receiving disabled.                                                                                               |
 
 </details>
+
+### Packet Format
+
+All messages sent and received by this Driver conform to this packet format:
+
+| header fileds | bytes |                       Description |
+| ------------- | ----: | --------------------------------: |
+| MSG_LEN       |     1 |                 length of message |
+| ID_RX         |     1 |            ID of receiver message |
+| ID_TX         |     1 | ID of transmiter - message sender |
+| FLAGS         |     1 |   user flags packed into one byte |
+| message[]     |  0-53 |                           message |
+
+`NOTE: ID_RX mus be 0xff - workaround`
+
+### Performance
+
+This radio supports a range of different data rates and powers. The lowest speeds are the most reliable, however you should note that at 1kbps and with an 13 octet payload, the transmission time for one packet approaches 5 seconds. Therefore you should be cautious about trying to send too many or too long messages per unit of time, lest you monopolise the airwaves. Be a good neighbour and use the lowest power and fastest speed that you can.
+
+When running with a power output of 1W and at the slowest speed of 1kbps, this module has an impressive range. Device was tested with: E32-TTL-1W (1 W power, 1kbps data rate), transmiter was equpied with sormal wire antenna, receiver was equiped with directional antenna Yagi-Uda, both antennas was in line of sight.
+
+The picture below shows a map with the receiver and transmitter on it.
+
+![map_pic](map.PNG)
 
 # Library Members Documentation
 
@@ -776,3 +806,130 @@ inherited from RadioHead.
 ---
 
 ## Private Member Functions
+
+### tyrakaSend
+
+Method used internaly by [sendString](#sendstring) and [sendStruct](#sendstruct) to send wrapped packet.
+This method directly drive UART port.
+
+For internal driver user only.
+
+<details>
+
+```cpp
+Status tyrakaSend(const uint8_t *packet, uint8_t size_);
+```
+
+**Parameters**
+
+- `message` - pointer to the memory area where the packet is stored,
+- `size` - number of bytes of data to send,
+
+&nbsp;
+
+**Returns**
+
+- `Status` - status stored information about transmission success.
+
+</details>
+
+---
+
+### tyrakaReceive
+
+Method used internaly by [receiveMessage](#receivemessage) to recive wrapped packet.
+This method directly drive UART port.
+
+For internal driver user only.
+
+<details>
+
+```cpp
+Status tyrakaReceive();
+```
+
+**Returns**
+
+- `Status` - status stored information about transmission success.
+
+</details>
+
+---
+
+### packFlagsToByte
+
+Method used internaly by [sendString](#sendstring) and [sendStruct](#sendstruct) to pack all fields from Flags struct into one byte of packet.
+
+For internal driver user only.
+
+<details>
+
+```cpp
+uint8_t packFlagsToByte(const Flags *struct_flags);
+```
+
+**Parameters**
+
+- `struct_flags` - pointer to the memory area where the flags are stored.
+
+&nbsp;
+
+**Returns**
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; byte which store all flags bits.
+
+</details>
+
+---
+
+### unpackFlagsFromByte
+
+Method used internaly by [receiveMessage](#receivemessage) to unpack flags byte into Flags struct.
+
+For internal driver user only.
+
+<details>
+
+```cpp
+Flags unpackFlagsFromByte(const uint8_t byte_flags);
+```
+
+**Parameters**
+
+- `byte_flags` - byte which store all flags bits.
+
+&nbsp;
+
+**Returns**
+
+- `Flags` - Struct with unpacked flags.
+
+</details>
+
+---
+
+### init_stack
+
+Method used internaly by [sendString](#sendstring) and [sendStruct](#sendstruct) to allocate memory for string or struct data.
+
+For internal driver user only.
+
+<details>
+
+```cpp
+LoRaSinglePacket *init_stack(int m);
+```
+
+**Parameters**
+
+- `m` - size of message.
+
+&nbsp;
+
+**Returns**
+
+- `LoRaSinglePacket` - conteiner for packet with allocated memory for header and message.
+
+</details>
+
+---
