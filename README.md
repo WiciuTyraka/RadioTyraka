@@ -11,7 +11,7 @@
     - [Public Member Functions](#public-member-function)
     - [Protected Member Function](#protected-member-function)
     - [Private Member Functions](#private-member-function)
-    - [Additional Inherited Members](#additional-inherited-members)
+  - [Example](#example)
 
 # LoRa Library
 
@@ -73,6 +73,10 @@ When running with a power output of 1W and at the slowest speed of 1kbps, this m
 The picture below shows a map with the receiver and transmitter on it.
 
 ![map_pic](map.PNG)
+
+### Example
+
+Example codes were written for the library, which can be found under this [link](RadioTyraka/examples)
 
 # Library Members Documentation
 
