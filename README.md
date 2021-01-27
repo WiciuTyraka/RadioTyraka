@@ -44,9 +44,9 @@ Various modes can be set via M0 and M1 pins.
 
 </details>
 
-## Library Member Documentation
+# Library Member Documentation
 
-### Types
+## Types
 
 ---
 
@@ -114,6 +114,53 @@ enum BaudRate
     BaudRate57600 = RH_E32_PARAM_SPED_UART_BAUD_57600,
     BaudRate115200 = RH_E32_PARAM_SPED_UART_BAUD_115200
 }
+```
+
+</details>
+
+---
+
+**OperatingMode**
+
+Defines values to be passed to [setOperatinMode](#setoperationmode).
+
+For internal driver user only
+
+<details>
+
+```cpp
+ typedef enum
+  {
+    ModeNormal = 0,  ///< Normal mode for sending and receiving messages
+    ModeWakeUp,      ///< Adds a long preamble to transmission to allow destination receivers to wake up
+    ModePowerSaving, ///< Receiver sleeps until a message is received
+    ModeSleep        ///< Use during parameter setting
+  } OperatingMode;
+```
+
+</details>
+
+---
+
+**Parameters**
+
+Structure for reading and writing radio control parameters.
+
+For internal driver user only
+
+<details>
+
+```cpp
+ typedef struct
+  {
+    uint8_t head;   ///< 0xc2 (no save) or 0xc0 (save)
+    uint8_t addh;   ///< High address byte (not used by this driver)
+    uint8_t addl;   ///< Low address byte (not used by this driver)
+    uint8_t sped;   ///< Data and baud rate parameters
+    uint8_t chan;   ///< Radio channel
+    uint8_t option; ///< Various control options
+
+  } Parameters;
 ```
 
 </details>
@@ -295,7 +342,7 @@ typedef struct packetInfo
 
 </details>
 
-### Public Member Functions
+## Public Member Functions
 
 ---
 
@@ -454,6 +501,156 @@ inherited from RadioHead.
 
 </details>
 
-### Protected Member Functions
+## Protected Member Functions
 
-### Private Member Functions
+---
+
+### setOperatingMode
+
+Sets the operating mode of the radio. For internal use only
+
+<details>
+
+```cpp
+void 	setOperatingMode (OperatingMode mode)
+```
+
+**Parameters**
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;value of valid mode from the OperatingMode enum
+
+&nbsp;
+inherited from RadioHead.
+
+</details>
+
+---
+
+### waitAuxHigh
+
+Waits for the AUX pin to go high For internal use only.
+
+<details>
+
+```cpp
+void 	waitAuxHigh ()
+```
+
+&nbsp;
+inherited from RadioHead.
+
+</details>
+
+---
+
+### waitAuxLow
+
+Waits for the AUX pin to go low For internal use only
+
+<details>
+
+```cpp
+void 	waitAuxLow ()
+```
+
+&nbsp;
+inherited from RadioHead.
+
+</details>
+
+---
+
+### readParameters
+
+Read the radio configuration parameters from LoRa device into local memory.
+
+<details>
+
+```cpp
+bool 	readParameters (Parameters &params)
+```
+
+**Parameters**
+
+- `params` - reference to a Parameter structure which will be filled if successful.
+
+&nbsp;
+
+**Returns**
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;true if successful
+
+&nbsp;
+
+inherited from RadioHead.
+
+</details>
+
+---
+
+### writeParameters
+
+Write radio configuration parameters from local memory to the radio. You can choose whether the parameter will be saved across power down or not.
+
+<details>
+
+```cpp
+bool 	writeParameters (Parameters &params, bool save=false)
+```
+
+**Parameters**
+
+- `params` - Reference to a Parameter structure containing the radio configuration parameters to be written to the radio.
+- `save` - If true, the parameters will be saved across power down in the radio
+
+&nbsp;
+
+**Returns**
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;true if successful
+
+&nbsp;
+
+inherited from RadioHead.
+
+</details>
+
+---
+
+### validateRxBuf
+
+Examine the receive buffer to determine whether the message is for this node.
+Check whether the latest received message is complete and uncorrupted.
+For internal use only.
+
+<details>
+
+```cpp
+void 	validateRxBuf ()
+```
+
+inherited from RadioHead.
+
+</details>
+
+---
+
+### clearRxBuf
+
+Clear local receive buffer. For internal use only.
+
+<details>
+
+```cpp
+void 	clearRxBuf ()
+```
+
+&nbsp;
+
+inherited from RadioHead.
+
+</details>
+
+---
+
+## Private Member Functions
