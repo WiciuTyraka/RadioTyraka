@@ -936,4 +936,10 @@ LoRaSinglePacket *init_stack(int m);
 
 </details>
 
+&nbsp;
+
 ---
+
+&nbsp;
+
+_by Wiktor Tasarek_
